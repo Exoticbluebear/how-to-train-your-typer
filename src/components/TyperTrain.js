@@ -190,7 +190,7 @@ const TyperTrain = () => {
         if (selectedDifficulty) {
             loadParagraph();
         }
-    }, [selectedDifficulty]);
+    }, [selectedDifficulty, loadParagraph]);
 
     useEffect(() => {
         let interval;
@@ -211,7 +211,7 @@ const TyperTrain = () => {
         return () => {
             clearInterval(interval);
         };
-    }, [isTyping, timeLeft]);
+    }, [isTyping, timeLeft, charIndex, mistakes]);
 
     return (
         <div className="container">
