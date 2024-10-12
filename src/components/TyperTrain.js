@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './TyperTrain.scss';
 import TypingArea from './TypingArea';
 import DifficultySelector from './DifficultySelector';
 
 const TyperTrain = () => {
-    const paragraphs = {
+    const paragraphs = useMemo(() => ({
         Easy: [
             "The cat sits on the mat.",
             "Birds can fly in the sky."
@@ -17,7 +17,7 @@ const TyperTrain = () => {
             "An aunt is a bassoon from the right perspective.",
             "One cannot separate foods from blowzy bows."
         ],
-    };
+    }), []);
 
     const [selectedDifficulty, setSelectedDifficulty] = useState(null);
     const [typingText, setTypingText] = useState([]);
@@ -52,7 +52,7 @@ const TyperTrain = () => {
         setMistakes(0);
         setIsTyping(false);
         inputRef.current.focus();
-    }, [selectedDifficulty]); // Add selectedDifficulty as a dependency
+    }, [selectedDifficulty, paragraphs]);
 
     const handleDifficultyChange = (difficulty) => {
         setSelectedDifficulty(difficulty);
@@ -159,6 +159,8 @@ const TyperTrain = () => {
                 <p><strong>Words Per Minute (WPM):</strong> ${WPM}</p>
                 <p><strong>Characters Per Minute (CPM):</strong> ${CPM}</p>
 
+                <p><p><p>
+
                 <p class="instructions-head" style="text-decoration: underline;"><strong>Instructions for Reading the Report:</strong></p>
 
                 <p><strong>Typed Paragraph:</strong> The paragraph you attempted to type is displayed with your progress.</p>
@@ -172,6 +174,8 @@ const TyperTrain = () => {
                 <p><strong>WPM (Words Per Minute):</strong> This metric represents your typing speed based on the number of correctly typed words in a minute.</p>
 
                 <p><strong>CPM (Characters Per Minute):</strong> This displays the number of characters you typed correctly per minute.</p>
+
+                </p>
             </body>
             </html>
         `;
