@@ -6,8 +6,11 @@ import DifficultySelector from './DifficultySelector';
 const TyperTrain = () => {
     const paragraphs = useMemo(() => ({
         Easy: [
-            "The cat sits on the mat.",
-            "Birds can fly in the sky."
+            "The cat stretched lazily on the windowsill, enjoying the warmth of the sun. It watched as birds flitted about in the garden, chirping happily. Every now and then, it would twitch its tail, pretending to be ready to pounce, but mostly it just wanted to nap.",
+            "At the park, children laughed and played on the swings. Some were riding bicycles, while others were flying kites. The laughter echoed through the trees, creating a cheerful atmosphere. Parents watched from nearby benches, sipping their coffee and enjoying the lovely day.",
+            "The smell of fresh cookies wafted through the kitchen. Mom was baking chocolate chip cookies, and I couldn’t wait to have one. I helped her mix the batter, and we had fun adding in extra chocolate chips. Soon, the cookies were ready, and the kitchen was filled with warmth and sweetness.",
+            "My favorite hobby is painting. I love to spend my afternoons creating colorful landscapes and portraits. The brush glides over the canvas, and I feel a sense of peace as I mix colors. Painting allows me to express my emotions and capture the beauty of the world around me.",
+            "On weekends, my family likes to go hiking in the mountains. The trails are surrounded by tall trees and vibrant wildflowers. We pack a picnic and enjoy the fresh air while exploring nature. Each hike brings new adventures and beautiful views that we love to capture with photos."
         ],
         Medium: [
             "A plant is one of the most important living things that develop on the earth.",
@@ -51,6 +54,7 @@ const TyperTrain = () => {
         setCharIndex(0);
         setMistakes(0);
         setIsTyping(false);
+        setTimeLeft(maxTime); // Reset time left
         inputRef.current.focus();
     }, [selectedDifficulty, paragraphs]);
 
@@ -79,12 +83,15 @@ const TyperTrain = () => {
     const initTyping = (event) => {
         const characters = document.querySelectorAll('.char');
         let typedChar = event.target.value;
+
         if (charIndex < characters.length && timeLeft > 0) {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
+
             if (!isTyping) {
                 setIsTyping(true);
             }
+
             if (typedChar === currentChar) {
                 setCharIndex(charIndex + 1);
                 if (charIndex + 1 < characters.length) characters[charIndex + 1].classList.add('active');
@@ -100,13 +107,11 @@ const TyperTrain = () => {
 
             if (charIndex === characters.length - 1) setIsTyping(false);
 
-            let wpm = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
-            wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
-            setWPM(wpm);
-
-            let cpm = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
-            cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-            setCPM(parseInt(cpm, 10));
+            // Update WPM and CPM
+            const updatedCPM = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
+            const updatedWPM = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
+            setCPM(Math.max(0, Math.floor(updatedCPM)));
+            setWPM(Math.max(0, updatedWPM));
         } else {
             setIsTyping(false);
         }
@@ -114,7 +119,7 @@ const TyperTrain = () => {
 
     const handleKeyDown = (event) => {
         const characters = document.querySelectorAll('.char');
-        if (event.key === 'Backspace' && charIndex > 0 && charIndex < characters.length && timeLeft > 0) {
+        if (event.key === 'Backspace' && charIndex > 0 && timeLeft > 0) {
             if (characters[charIndex - 1].classList.contains('correct')) {
                 characters[charIndex - 1].classList.remove('correct');
             }
@@ -125,19 +130,19 @@ const TyperTrain = () => {
             characters[charIndex].classList.remove('active');
             characters[charIndex - 1].classList.add('active');
             setCharIndex(charIndex - 1);
-            let cpm = (charIndex - mistakes - 1) * (60 / (maxTime - timeLeft));
-            cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-            setCPM(parseInt(cpm, 10));
-            let wpm = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
-            wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
-            setWPM(wpm);
+
+            // Update CPM and WPM on backspace
+            const updatedCPM = (charIndex - mistakes - 1) * (60 / (maxTime - timeLeft));
+            const updatedWPM = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
+            setCPM(Math.max(0, Math.floor(updatedCPM)));
+            setWPM(Math.max(0, updatedWPM));
         }
     };
 
     const printReport = () => {
         const completedText = currentParagraph.slice(0, charIndex);
         const remainingText = currentParagraph.slice(charIndex);
-        
+
         const reportContent = `
             <html>
             <head>
@@ -158,24 +163,13 @@ const TyperTrain = () => {
                 <p><strong>Mistakes:</strong> ${mistakes}</p>
                 <p><strong>Words Per Minute (WPM):</strong> ${WPM}</p>
                 <p><strong>Characters Per Minute (CPM):</strong> ${CPM}</p>
-
-                <p><p><p>
-
                 <p class="instructions-head" style="text-decoration: underline;"><strong>Instructions for Reading the Report:</strong></p>
-
                 <p><strong>Typed Paragraph:</strong> The paragraph you attempted to type is displayed with your progress.</p>
-
                 <p><strong>Underlined Text:</strong> The portion of the text that you typed correctly is underlined.</p>
-
                 <p><strong>Total Characters:</strong> This shows the total number of characters in the paragraph you were typing.</p>
-
                 <p><strong>Mistakes:</strong> This indicates the number of incorrect characters you typed, which are not underlined.</p>
-
                 <p><strong>WPM (Words Per Minute):</strong> This metric represents your typing speed based on the number of correctly typed words in a minute.</p>
-
                 <p><strong>CPM (Characters Per Minute):</strong> This displays the number of characters you typed correctly per minute.</p>
-
-                </p>
             </body>
             </html>
         `;
@@ -194,28 +188,26 @@ const TyperTrain = () => {
 
     useEffect(() => {
         let interval;
+
         if (isTyping && timeLeft > 0) {
             interval = setInterval(() => {
-                setTimeLeft(prev => prev - 1);
-                let cpm = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
-                cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-                setCPM(parseInt(cpm, 10));
-                let wpm = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
-                wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
-                setWPM(wpm);
+                setTimeLeft(prev => {
+                    if (prev <= 1) {
+                        clearInterval(interval);
+                        setIsTyping(false);
+                        return 0; // Stop the timer
+                    }
+                    return prev - 1;
+                });
             }, 1000);
-        } else if (timeLeft === 0) {
-            clearInterval(interval);
-            setIsTyping(false);
         }
-        return () => {
-            clearInterval(interval);
-        };
-    }, [isTyping, timeLeft, charIndex, mistakes]);
+
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, [isTyping, timeLeft]);
 
     return (
         <div className="container">
-            { !selectedDifficulty ? (
+            {!selectedDifficulty ? (
                 <DifficultySelector onSelectDifficulty={handleDifficultyChange} />
             ) : (
                 <>
