@@ -88,7 +88,7 @@ const TyperTrain = () => {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
 
-            if (!isTyping) {
+            if (isTyping) {
                 setIsTyping(true);
             }
 
