@@ -213,11 +213,6 @@ useEffect(() => {
     return () => clearInterval(interval); // Cleanup on unmount
 }, [isTyping, timeLeft]);
 
-
-    return () => clearInterval(interval); // Cleanup on unmount
-}, [isTyping, timeLeft, charIndex, mistakes]);
-
-
     return (
         <div className="container">
             {!selectedDifficulty ? (
