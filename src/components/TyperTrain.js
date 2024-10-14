@@ -86,6 +86,7 @@ const TyperTrain = () => {
         if (charIndex < characters.length && timeLeft > 0) {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
+            //Start the timer
             if (!isTyping) {
                 setIsTyping(true);
             }
@@ -190,23 +191,28 @@ const handleKeyDown = (event) => {
         }
     }, [selectedDifficulty, loadParagraph]);
 
-    useEffect(() => {
-        let interval;
-        if (isTyping && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft(timeLeft - 1);
-                let cpm = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
-                cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-                setCPM(parseInt(cpm, 10));
-                let wpm = Math.round(((charIndex - mistakes) / 5) / (
-                    maxTime - timeLeft) * 60);
-                wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
-                setWPM(wpm);
-            }, 1000);
-        } else if (timeLeft === 0) {
-            clearInterval(interval);
-            setIsTyping(false);
-        }
+useEffect(() => {
+    let interval;
+
+    if (isTyping && timeLeft > 0) {
+        interval = setInterval(() => {
+            setTimeLeft(prev => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    setIsTyping(false); // Stop typing when time runs out
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    } else if (timeLeft === 0) {
+        clearInterval(interval);
+        setIsTyping(false);
+    }
+
+    return () => clearInterval(interval); // Cleanup on unmount
+}, [isTyping, timeLeft]);
+
 
     return () => clearInterval(interval); // Cleanup on unmount
 }, [isTyping, timeLeft, charIndex, mistakes]);
