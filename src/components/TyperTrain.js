@@ -192,7 +192,7 @@ const handleKeyDown = (event) => {
 
     useEffect(() => {
         let interval;
-        if (timeLeft > 0) {
+        if (isTyping && timeLeft > 0) {
             interval = setInterval(() => {
                 setTimeLeft(timeLeft - 1);
                 let cpm = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
