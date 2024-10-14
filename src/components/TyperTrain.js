@@ -83,35 +83,37 @@ const TyperTrain = () => {
     const initTyping = (event) => {
         const characters = document.querySelectorAll('.char');
         let typedChar = event.target.value;
-
         if (charIndex < characters.length && timeLeft > 0) {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
-
-            if (isTyping) {
+            if (!isTyping) {
                 setIsTyping(true);
             }
-
             if (typedChar === currentChar) {
                 setCharIndex(charIndex + 1);
-                if (charIndex + 1 < characters.length) characters[charIndex + 1].classList.add('active');
+                if (charIndex + 1 < characters.length) characters[charIndex +
+                    1].classList.add('active');
                 characters[charIndex].classList.remove('active');
                 characters[charIndex].classList.add('correct');
             } else {
                 setCharIndex(charIndex + 1);
                 setMistakes(mistakes + 1);
                 characters[charIndex].classList.remove('active');
-                if (charIndex + 1 < characters.length) characters[charIndex + 1].classList.add('active');
+                if (charIndex + 1 < characters.length) characters[charIndex +
+                    1].classList.add('active');
                 characters[charIndex].classList.add('wrong');
             }
 
             if (charIndex === characters.length - 1) setIsTyping(false);
 
-            // Update WPM and CPM
-            const updatedCPM = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
-            const updatedWPM = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
-            setCPM(Math.max(0, Math.floor(updatedCPM)));
-            setWPM(Math.max(0, updatedWPM));
+            let wpm = Math.round(((charIndex - mistakes) / 5) / (
+                maxTime - timeLeft) * 60);
+            wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+            setWPM(wpm);
+
+            let cpm = (charIndex - mistakes) * (60 / (maxTime - timeLeft));
+            cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
+            setCPM(parseInt(cpm, 10));
         } else {
             setIsTyping(false);
         }
@@ -119,7 +121,8 @@ const TyperTrain = () => {
 
     const handleKeyDown = (event) => {
         const characters = document.querySelectorAll('.char');
-        if (event.key === 'Backspace' && charIndex > 0 && timeLeft > 0) {
+        if (event.key === 'Backspace' && charIndex > 0 &&
+            charIndex < characters.length && timeLeft > 0) {
             if (characters[charIndex - 1].classList.contains('correct')) {
                 characters[charIndex - 1].classList.remove('correct');
             }
@@ -130,12 +133,13 @@ const TyperTrain = () => {
             characters[charIndex].classList.remove('active');
             characters[charIndex - 1].classList.add('active');
             setCharIndex(charIndex - 1);
-
-            // Update CPM and WPM on backspace
-            const updatedCPM = (charIndex - mistakes - 1) * (60 / (maxTime - timeLeft));
-            const updatedWPM = Math.round(((charIndex - mistakes) / 5) / (maxTime - timeLeft) * 60);
-            setCPM(Math.max(0, Math.floor(updatedCPM)));
-            setWPM(Math.max(0, updatedWPM));
+            let cpm = (charIndex - mistakes - 1) * (60 / (maxTime - timeLeft));
+            cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
+            setCPM(parseInt(cpm, 10));
+            let wpm = Math.round(((charIndex - mistakes) / 5) / (
+            maxTime - timeLeft) * 60);
+            wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+            setWPM(wpm);
         }
     };
 
