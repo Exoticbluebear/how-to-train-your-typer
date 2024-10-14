@@ -190,24 +190,32 @@ const TyperTrain = () => {
         }
     }, [selectedDifficulty, loadParagraph]);
 
-    useEffect(() => {
-        let interval;
+ useEffect(() => {
+    let interval;
 
-        if (isTyping && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft(prev => {
-                    if (prev <= 1) {
-                        clearInterval(interval);
-                        setIsTyping(false);
-                        return 0; // Stop the timer
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
+    if (isTyping && timeLeft > 0) {
+        interval = setInterval(() => {
+            setTimeLeft(prev => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    setIsTyping(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
 
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, [isTyping, timeLeft]);
+            // Update WPM and CPM every second
+            const totalCharsTyped = charIndex - mistakes;
+            const wpm = Math.round((totalCharsTyped / 5) / ((maxTime - timeLeft) / 60));
+            const cpm = totalCharsTyped * (60 / (maxTime - timeLeft));
+            setWPM(Math.max(0, wpm));
+            setCPM(Math.max(0, Math.floor(cpm)));
+        }, 1000);
+    }
+
+    return () => clearInterval(interval); // Cleanup on unmount
+}, [isTyping, timeLeft, charIndex, mistakes]);
+
 
     return (
         <div className="container">
