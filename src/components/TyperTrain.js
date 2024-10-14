@@ -205,9 +205,10 @@ const TyperTrain = () => {
             });
 
             // Update WPM and CPM every second
-            const totalCharsTyped = charIndex - mistakes;
-            const wpm = Math.round((totalCharsTyped / 5) / ((maxTime - timeLeft) * 60));
-            const cpm = totalCharsTyped * (60 / (maxTime - timeLeft));
+            let totalCharsTyped = charIndex - mistakes;
+            let wpm = Math.round(((charIndex - mistakes) / 5) / (
+                    maxTime - timeLeft) * 60);
+            let cpm = totalCharsTyped * (60 / (maxTime - timeLeft));
             setWPM(Math.max(0, wpm));
             setCPM(Math.max(0, Math.floor(cpm)));
         }, 1000);
