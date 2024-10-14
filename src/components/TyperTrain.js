@@ -29,7 +29,7 @@ const TyperTrain = () => {
     const [timeLeft, setTimeLeft] = useState(maxTime);
     const [charIndex, setCharIndex] = useState(0);
     const [mistakes, setMistakes] = useState(0);
-    const [isTyping, setIsTyping] = useState(false);
+    const [isTyping, setIsTyping] = useState(true);
     const [WPM, setWPM] = useState(0);
     const [CPM, setCPM] = useState(0);
     const inputRef = useRef();
