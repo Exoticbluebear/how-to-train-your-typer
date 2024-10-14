@@ -13,12 +13,18 @@ const TyperTrain = () => {
             "On weekends, my family likes to go hiking in the mountains. The trails are surrounded by tall trees and vibrant wildflowers. We pack a picnic and enjoy the fresh air while exploring nature. Each hike brings new adventures and beautiful views that we love to capture with photos."
         ],
         Medium: [
-            "A plant is one of the most important living things that develop on the earth.",
-            "The root is the part of the plant that grows in the soil."
+            "Technology has transformed our lives in countless ways. From communication to entertainment, the advancements are remarkable. We can connect with people across the globe in an instant.",
+            "The forest is a vital ecosystem that supports a diverse range of wildlife. Trees provide shelter, while streams offer water. Preserving these natural habitats is crucial for maintaining biodiversity.",
+            "Art has the power to inspire and provoke thought. Whether through painting, music, or dance, creative expressions can evoke emotions and tell stories that resonate deeply with individuals.",
+            "Healthy eating habits are essential for overall well-being. A balanced diet filled with fruits, vegetables, and whole grains can boost energy levels and improve mood. It's important to make mindful food choices.",
+            "Traveling opens up new perspectives and experiences. Exploring different cultures allows us to appreciate diversity and understand global issues better. Each journey enriches our knowledge and broadens our horizons."
         ],
         Hard: [
-            "An aunt is a bassoon from the right perspective.",
-            "One cannot separate foods from blowzy bows."
+            "Quantum mechanics challenges our understanding of reality, delving into the behavior of subatomic particles. The principles often defy classical physics, leading to perplexing phenomena that scientists continue to explore.",
+            "The existential questions posed by philosophers have shaped human thought for centuries. Concepts of free will, morality, and the nature of existence remain central to philosophical discourse, prompting introspection and debate.",
+            "In the realm of literature, postmodernism blurs the boundaries between fiction and reality. Authors employ unconventional narrative structures, often subverting traditional storytelling techniques to reflect the complexities of modern life.",
+            "The concept of time is not merely a linear progression but a multifaceted experience influenced by perception. Philosophers and scientists alike grapple with understanding its true nature, questioning whether it is an absolute or a relative construct.",
+            "Globalization has interconnected economies, cultures, and political systems, fostering both collaboration and conflict. While it offers opportunities for growth and exchange, it also raises concerns about cultural homogenization and environmental sustainability."
         ],
     }), []);
 
