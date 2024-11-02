@@ -86,6 +86,17 @@ const TyperTrain = () => {
         loadParagraph();
     };
 
+    const updateMetrics = useCallback(() => {
+        if (startTime) {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const correctChars = charIndex - mistakes;
+            let wpm = Math.round((correctChars / 5) / elapsedTime * 60) || 0;
+            let cpm = Math.round(correctChars * (60 / elapsedTime)) || 0;
+            setWPM(wpm);
+            setCPM(cpm);
+        }
+    }, [startTime, charIndex, mistakes]);
+
     const initTyping = (event) => {
         const characters = document.querySelectorAll('.char');
         let typedChar = event.target.value;
@@ -205,6 +216,7 @@ const TyperTrain = () => {
                     }
                     return prev - 1;
                 });
+                updateMetrics();
             }, 1000);
         } else if (timeLeft === 0) {
             clearInterval(interval);
