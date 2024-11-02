@@ -40,7 +40,7 @@ const TyperTrain = () => {
     const [CPM, setCPM] = useState(0);
     const inputRef = useRef();
     const [currentParagraph, setCurrentParagraph] = useState('');
-    const [startTime, setStartTime] = useState(null);
+    const [startTime, setStartTime] = useState(null); // Track when typing starts
 
     const loadParagraph = useCallback(() => {
         if (!selectedDifficulty) return;
@@ -61,8 +61,8 @@ const TyperTrain = () => {
         setCharIndex(0);
         setMistakes(0);
         setIsTyping(false);
-        setTimeLeft(maxTime);
-        setStartTime(null);
+        setTimeLeft(maxTime); // Reset time left
+        setStartTime(null); // Reset start time
         inputRef.current.focus();
     }, [selectedDifficulty, paragraphs]);
 
@@ -79,6 +79,10 @@ const TyperTrain = () => {
         setTypingText([]);
         setCPM(0);
         setWPM(0);
+        const characters = document.querySelectorAll('.char');
+        characters.forEach(span => {
+            span.classList.remove("correct", "wrong", "active");
+        });
         loadParagraph();
     };
 
@@ -88,9 +92,10 @@ const TyperTrain = () => {
         if (charIndex < characters.length && timeLeft > 0) {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
+            // Start the timer and set start time
             if (!isTyping) {
                 setIsTyping(true);
-                setStartTime(Date.now());
+                setStartTime(Date.now()); // Set start time
             }
             if (typedChar === currentChar) {
                 setCharIndex(charIndex + 1);
@@ -104,24 +109,27 @@ const TyperTrain = () => {
                 if (charIndex + 1 < characters.length) characters[charIndex + 1].classList.add('active');
                 characters[charIndex].classList.add('wrong');
             }
+
+            // Update WPM and CPM
             updateMetrics();
         }
     };
 
-    const updateMetrics = useCallback(() => {
+    const updateMetrics = () => {
         if (startTime) {
             const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
             const correctChars = charIndex - mistakes;
+
             let wpm = Math.round((correctChars / 5) / (elapsedTime / 60)) || 0;
-            let cpm = Math.round(correctChars * (60 / elapsedTime)) || 0;
+            let cpm = Math.round((correctChars / elapsedTime) * 60) || 0;
             setWPM(wpm);
             setCPM(cpm);
         }
-    }, [startTime, charIndex, mistakes]);
+    };
 
     const handleKeyDown = (event) => {
         const characters = document.querySelectorAll('.char');
-        if (event.key === 'Backspace' && charIndex > 0 && charIndex < characters.length && timeLeft > 0) {
+        if (event.key === 'Backspace' && charIndex > 0 && timeLeft > 0) {
             if (characters[charIndex - 1].classList.contains('correct')) {
                 characters[charIndex - 1].classList.remove('correct');
             }
@@ -132,18 +140,59 @@ const TyperTrain = () => {
             characters[charIndex].classList.remove('active');
             characters[charIndex - 1].classList.add('active');
             setCharIndex(charIndex - 1);
-            updateMetrics();
+            updateMetrics(); // Update metrics after backspace
         }
     };
 
+    const printReport = () => {
+        const completedText = currentParagraph.slice(0, charIndex);
+        const remainingText = currentParagraph.slice(charIndex);
+
+        const reportContent = `
+            <html>
+            <head>
+                <title>Typing Test Report</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #333; }
+                    p { font-size: 18px; }
+                    .completed { text-decoration: underline; }
+                </style>
+            </head>
+            <body>
+                <h1>Typing Test Report</h1>
+                <p><strong>Paragraph:</strong></p>
+                <p>
+                    <span class="completed">${completedText}</span><span>${remainingText}</span>
+                </p>
+                <p><strong>Mistakes:</strong> ${mistakes}</p>
+                <p><strong>Words Per Minute (WPM):</strong> ${WPM}</p>
+                <p><strong>Characters Per Minute (CPM):</strong> ${CPM}</p>
+            </body>
+            </html>
+        `;
+
+        const newWindow = window.open('', '_blank');
+        newWindow.document.write(reportContent);
+        newWindow.document.close();
+        newWindow.print();
+    };
+
+    useEffect(() => {
+        if (selectedDifficulty) {
+            loadParagraph();
+        }
+    }, [selectedDifficulty, loadParagraph]);
+
     useEffect(() => {
         let interval;
+
         if (isTyping && timeLeft > 0) {
             interval = setInterval(() => {
                 setTimeLeft(prev => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setIsTyping(false);
+                        setIsTyping(false); // Stop typing when time runs out
                         return 0;
                     }
                     return prev - 1;
@@ -155,8 +204,8 @@ const TyperTrain = () => {
             setIsTyping(false);
         }
 
-        return () => clearInterval(interval);
-    }, [isTyping, timeLeft, updateMetrics]);
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, [isTyping, timeLeft]);
 
     return (
         <div className="container">
