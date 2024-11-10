@@ -40,7 +40,7 @@ const TyperTrain = () => {
     const [CPM, setCPM] = useState(0);
     const inputRef = useRef();
     const [currentParagraph, setCurrentParagraph] = useState('');
-    const [startTime, setStartTime] = useState(null); // Track when typing starts
+
 
     const loadParagraph = useCallback(() => {
         if (!selectedDifficulty) return;
