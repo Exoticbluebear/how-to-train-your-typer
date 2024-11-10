@@ -110,22 +110,10 @@ const TyperTrain = () => {
                 characters[charIndex].classList.add('wrong');
             }
 
-            // Update WPM and CPM
-            updateMetrics();
+          
         }
     };
 
-    const updateMetrics = () => {
-        if (startTime) {
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-            const correctChars = charIndex - mistakes;
-
-            let wpm = Math.round((correctChars / 5) / (elapsedTime / 60)) || 0;
-            let cpm = Math.round((correctChars / elapsedTime) * 60) || 0;
-            setWPM(wpm);
-            setCPM(cpm);
-        }
-    };
 
     const handleKeyDown = (event) => {
         const characters = document.querySelectorAll('.char');
@@ -140,7 +128,6 @@ const TyperTrain = () => {
             characters[charIndex].classList.remove('active');
             characters[charIndex - 1].classList.add('active');
             setCharIndex(charIndex - 1);
-            updateMetrics(); // Update metrics after backspace
         }
     };
 
@@ -205,7 +192,7 @@ const TyperTrain = () => {
         }
 
         return () => clearInterval(interval); // Cleanup on unmount
-    }, [isTyping, timeLeft, updateMetrics]);
+    }, [isTyping, timeLeft]);
 
     return (
         <div className="container">
