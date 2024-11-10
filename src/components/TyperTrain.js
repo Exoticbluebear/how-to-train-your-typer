@@ -41,7 +41,6 @@ const TyperTrain = () => {
     const inputRef = useRef();
     const [currentParagraph, setCurrentParagraph] = useState('');
 
-
     const loadParagraph = useCallback(() => {
         if (!selectedDifficulty) return;
         const ranIndex = Math.floor(Math.random() * paragraphs[selectedDifficulty].length);
@@ -90,7 +89,6 @@ const TyperTrain = () => {
         if (charIndex < characters.length && timeLeft > 0) {
             let currentChar = characters[charIndex].innerText;
             if (currentChar === '_') currentChar = ' ';
-            // Start the timer and set start time
             if (!isTyping) {
                 setIsTyping(true);
             }
@@ -106,11 +104,8 @@ const TyperTrain = () => {
                 if (charIndex + 1 < characters.length) characters[charIndex + 1].classList.add('active');
                 characters[charIndex].classList.add('wrong');
             }
-
-          
         }
     };
-
 
     const handleKeyDown = (event) => {
         const characters = document.querySelectorAll('.char');
@@ -176,20 +171,30 @@ const TyperTrain = () => {
                 setTimeLeft(prev => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setIsTyping(false); // Stop typing when time runs out
+                        setIsTyping(false);
                         return 0;
                     }
                     return prev - 1;
                 });
-                
             }, 1000);
         } else if (timeLeft === 0) {
             clearInterval(interval);
             setIsTyping(false);
         }
 
-        return () => clearInterval(interval); // Cleanup on unmount
+        return () => clearInterval(interval);
     }, [isTyping, timeLeft]);
+
+    // New effect for updating WPM and CPM
+    useEffect(() => {
+        if (isTyping) {
+            const elapsedMinutes = (maxTime - timeLeft) / 60;
+            if (elapsedMinutes > 0) {
+                setCPM(Math.floor(charIndex / elapsedMinutes));
+                setWPM(Math.floor((charIndex / 5) / elapsedMinutes));
+            }
+        }
+    }, [charIndex, timeLeft, isTyping]);
 
     return (
         <div className="container">
