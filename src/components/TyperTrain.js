@@ -61,8 +61,6 @@ const TyperTrain = () => {
         setCharIndex(0);
         setMistakes(0);
         setIsTyping(false);
-        setTimeLeft(maxTime); // Reset time left
-        setStartTime(null); // Reset start time
         inputRef.current.focus();
     }, [selectedDifficulty, paragraphs]);
 
