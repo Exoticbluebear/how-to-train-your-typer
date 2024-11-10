@@ -184,7 +184,7 @@ const TyperTrain = () => {
                     }
                     return prev - 1;
                 });
-                updateMetrics();
+                
             }, 1000);
         } else if (timeLeft === 0) {
             clearInterval(interval);
