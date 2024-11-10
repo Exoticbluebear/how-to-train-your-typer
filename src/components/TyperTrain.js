@@ -205,7 +205,7 @@ const TyperTrain = () => {
         }
 
         return () => clearInterval(interval); // Cleanup on unmount
-    }, [isTyping, timeLeft]);
+    }, [isTyping, timeLeft, updateMetrics]);
 
     return (
         <div className="container">
