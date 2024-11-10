@@ -93,7 +93,6 @@ const TyperTrain = () => {
             // Start the timer and set start time
             if (!isTyping) {
                 setIsTyping(true);
-                setStartTime(Date.now()); // Set start time
             }
             if (typedChar === currentChar) {
                 setCharIndex(charIndex + 1);
