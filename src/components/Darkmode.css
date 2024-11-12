@@ -5,20 +5,19 @@ div.darkmode-toggle{
     margin: 30px;
 }
 
-.heading {
+.heading{
     position: absolute;
-    top: 20px; /* Adjust margin from the top */
-    left: 50%; /* Moves it to the middle of the screen horizontally */
-    transform: translateX(-50%); /* Centers it precisely by shifting it left by 50% of its width */
-    width: 400px; /* Set width as needed */
+    top: -15px;
+    right: 470px;
+    width: 400px;
     color: var(--header_color);
-    text-align: center; /* Centers text within the heading */
 }
 
-.title {
+
+.title{
     position: absolute;
-    bottom: 30px; /* Positions it near the bottom */
-    right: 30px; /* Positions it near the right */
+    bottom: 90%;
+    width: 400px;
     color: var(--header_color);
 }
 
