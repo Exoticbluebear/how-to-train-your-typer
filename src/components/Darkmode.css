@@ -1,25 +1,26 @@
-div.darkmode-toggle{
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 30px;
+.darkmode-toggle{
+    position: fixed;
+    top: 5%;
+    right: 7%;
+    
 }
 
-.heading{
-    position: absolute;
-    top: -15px;
-    right: 470px;
-    width: 400px;
-    color: var(--header_color);
+.heading {
+  position: fixed; 
+  top: 4%; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  color: var(--header_color);
+  text-align: center; 
 }
-
 
 .title{
-    position: absolute;
-    bottom: 90%;
-    width: 400px;
+    position: fixed;
     color: var(--header_color);
+    bottom: 20px;
+    right: 3%;
 }
+
 
 .switch {
     position: relative;
