@@ -24,8 +24,8 @@ const Darkmode = () => {
             onChange={toggleTheme}/>   
             <span className="slider round"></span>     
             </label>  
-            <div class="container">
-            <div class="heading">How-To-Train-Your-Typer</div>
+            <div className="container">
+            <div className="heading">How-To-Train-Your-Typer</div>
             </div>
             <div className="title">
                 <h4>An app by Kushan Amugoda</h4>
