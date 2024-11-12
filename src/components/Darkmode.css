@@ -1,8 +1,8 @@
 div.darkmode-toggle{
-    position: relative;
+    position: absolute;
     top: 0;
     right: 0;
-    margin: 0;
+    margin: 30px;
 }
 
 .heading{
